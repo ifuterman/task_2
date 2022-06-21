@@ -10,8 +10,12 @@ import java.util.List;
 
 @RestController
 public class RequestController {
-    @Autowired
-    private ConfigurableApplicationContext appContext;
+    private final ConfigurableApplicationContext appContext;
+
+    public RequestController(ConfigurableApplicationContext appContext) {
+        this.appContext = appContext;
+    }
+
     @RequestMapping("/")
     public ShortLinkResponse getShortLink(@RequestBody ShortLinkRequest request){
         ResourceRepository rep = appContext.getBean(ResourceRepository.class);
