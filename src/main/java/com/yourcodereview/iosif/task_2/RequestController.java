@@ -2,6 +2,9 @@ package com.yourcodereview.iosif.task_2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
@@ -10,6 +13,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,5 +69,21 @@ public class RequestController {
             }
         }
         return new StatisticsResponse();
+    }
+
+    @RequestMapping(value = "/stats", method = RequestMethod.GET)
+    public List<StatisticsResponse> commonStatistics (@RequestParam(value = "page") Integer page,
+                                                @RequestParam(value = "count") Integer count){
+        ResourceRepository rep = appContext.getBean(ResourceRepository.class);
+        Sort sort = Sort.by("count").descending();
+        Pageable pageable = PageRequest.of(page, count, sort);
+        Page<Resource> currentPage = rep.findAll(pageable);
+        ArrayList<StatisticsResponse> responses = new ArrayList<>();
+        long rank =(long) page * (long) count;
+        for(Resource resource : currentPage){
+            rank++;
+            responses.add(ResourceAdapter.createStatisticsResponse(resource, rank));
+        }
+        return responses;
     }
 }
