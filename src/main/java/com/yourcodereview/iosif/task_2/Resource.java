@@ -26,7 +26,7 @@ public class Resource {
     public Resource(String original, String link) {
         this.original = original;
         this.link = link;
-        count = 1;
+        count = 0;
     }
 
     public Resource() {

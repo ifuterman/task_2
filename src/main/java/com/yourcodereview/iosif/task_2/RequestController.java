@@ -2,11 +2,16 @@ package com.yourcodereview.iosif.task_2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RequestController {
@@ -16,15 +21,13 @@ public class RequestController {
         this.appContext = appContext;
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value = "/generate", method = RequestMethod.POST)
     public ShortLinkResponse getShortLink(@RequestBody ShortLinkRequest request){
         ResourceRepository rep = appContext.getBean(ResourceRepository.class);
         Resource resource;
         List<Resource> resources = rep.findByOriginal(request.getOriginal());
         if(resources.size() != 0){
             resource = resources.get(0);
-            resource.setCount(resource.getCount() + 1);
-            rep.save(resource);
         }
         else {
             resource = new Resource(request.getOriginal());
@@ -33,5 +36,33 @@ public class RequestController {
             rep.save(resource);
         }
         return ResourceAdapter.createShortLinkResponse(resource);
+    }
+
+    @RequestMapping(value = "/l/{id}", method = RequestMethod.GET)
+    public ModelAndView redirect( @PathVariable Long id, HttpServletRequest request){
+        request.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        ResourceRepository rep = appContext.getBean(ResourceRepository.class);
+        Optional<Resource> resource = rep.findById(id);
+        if(resource.isEmpty()){
+            return new ModelAndView("");
+        }
+        resource.get().setCount(resource.get().getCount() + 1);
+        rep.save(resource.get());
+        String url = resource.get().getOriginal();
+        return new ModelAndView("redirect:" + url);
+    }
+
+    @RequestMapping(value = "/stats/l/{id}", method = RequestMethod.GET)
+    public StatisticsResponse statistics (@PathVariable Long id){
+        ResourceRepository rep = appContext.getBean(ResourceRepository.class);
+        Iterable<Resource> iterator = rep.findAll(Sort.by("count").descending());
+        long rank = 0;
+        for (Resource resource : iterator) {
+            rank++;
+            if(resource.getId().equals(id)){
+                return ResourceAdapter.createStatisticsResponse(resource, rank);
+            }
+        }
+        return new StatisticsResponse();
     }
 }
