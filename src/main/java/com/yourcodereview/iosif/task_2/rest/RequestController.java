@@ -1,5 +1,11 @@
-package com.yourcodereview.iosif.task_2;
+package com.yourcodereview.iosif.task_2.rest;
 
+import com.yourcodereview.iosif.task_2.model.Resource;
+import com.yourcodereview.iosif.task_2.model.ResourceAdapter;
+import com.yourcodereview.iosif.task_2.protocol.ShortLinkRequest;
+import com.yourcodereview.iosif.task_2.protocol.ShortLinkResponse;
+import com.yourcodereview.iosif.task_2.protocol.StatisticsResponse;
+import com.yourcodereview.iosif.task_2.repository.ResourceRepository;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

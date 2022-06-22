@@ -1,4 +1,5 @@
-package com.yourcodereview.iosif.task_2;
+package com.yourcodereview.iosif.task_2.repository;
+import com.yourcodereview.iosif.task_2.model.Resource;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 

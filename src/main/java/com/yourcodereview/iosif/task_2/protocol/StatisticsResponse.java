@@ -1,4 +1,4 @@
-package com.yourcodereview.iosif.task_2;
+package com.yourcodereview.iosif.task_2.protocol;
 
 public class StatisticsResponse {
     private String link;

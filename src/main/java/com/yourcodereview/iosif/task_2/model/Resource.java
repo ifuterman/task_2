@@ -1,4 +1,4 @@
-package com.yourcodereview.iosif.task_2;
+package com.yourcodereview.iosif.task_2.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

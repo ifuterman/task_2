@@ -1,4 +1,7 @@
-package com.yourcodereview.iosif.task_2;
+package com.yourcodereview.iosif.task_2.model;
+
+import com.yourcodereview.iosif.task_2.protocol.ShortLinkResponse;
+import com.yourcodereview.iosif.task_2.protocol.StatisticsResponse;
 
 public class ResourceAdapter {
     static public ShortLinkResponse createShortLinkResponse(Resource resource){
